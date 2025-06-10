@@ -8,9 +8,9 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  'https://sentiment-analyzer-olive.vercel.app/',
-  'https://sentiment-analyzer-sulthanshas-projects.vercel.app/',
-  'https://sentiment-analyzer-git-main-sulthanshas-projects.vercel.app/'
+  'https://sentiment-sense-gilt.vercel.app/',
+  'https://sentiment-sense-sulthanshas-projects.vercel.app/',
+  'https://sentiment-sense-git-main-sulthanshas-projects.vercel.app/'
 ];
 
 app.use(cors({

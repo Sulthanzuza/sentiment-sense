@@ -37,9 +37,9 @@ function App() {
   
     let endpoint = '';
     if (postUrl.includes('youtube.com') || postUrl.includes('youtu.be')) {
-      endpoint = 'https://sa-server-55v1.onrender.com/insta/ytcomment';
+      endpoint = 'https://server-sense.onrender.com/insta/ytcomment';
     } else if (postUrl.includes('instagram.com')) {
-      endpoint = 'https://sa-server-55v1.onrender.com/insta/scrape';
+      endpoint = 'https://server-sense.onrender.com/insta/scrape';
     } else {
       setError('Unsupported URL. Please enter a valid Instagram or YouTube post link.');
       setLoading(false);
