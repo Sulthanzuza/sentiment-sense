@@ -8,9 +8,9 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  'https://sentiment-analyzer-bpkq.vercel.app/',
-  'https://sentiment-analyzer-bpkq-sulthanshas-projects.vercel.app/',
-  'https://sentiment-analyzer-bpkq-git-main-sulthanshas-projects.vercel.app/'
+  'https://sentiment-analyzer-olive.vercel.app/',
+  'https://sentiment-analyzer-sulthanshas-projects.vercel.app/',
+  'https://sentiment-analyzer-git-main-sulthanshas-projects.vercel.app/'
 ];
 
 app.use(cors({
