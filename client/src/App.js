@@ -56,13 +56,39 @@ function App() {
           url: postUrl,
         }),
       });
+
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+      }
   
       const data = await response.json();
-      setSentimentResults(data.results);
-      setSummary(data.summary);
+      
+      // Validate the data structure before setting state
+      if (data && typeof data === 'object') {
+        setSentimentResults(Array.isArray(data.results) ? data.results : []);
+        setSummary(data.summary || null);
+      } else {
+        throw new Error('Invalid response format');
+      }
+      
     } catch (err) {
       console.error('Error analyzing link:', err);
-      setError('Failed to analyze the post. Please try again later.');
+      
+      // Provide more specific error messages
+      if (err.message.includes('500')) {
+        setError('Server is experiencing issues. Please try again in a few minutes.');
+      } else if (err.message.includes('404')) {
+        setError('The content could not be found. Please check the URL and try again.');
+      } else if (err.message.includes('Failed to fetch')) {
+        setError('Network error. Please check your internet connection and try again.');
+      } else {
+        setError('Failed to analyze the post. Please try again later.');
+      }
+      
+      // Ensure state is reset on error
+      setSentimentResults([]);
+      setSummary(null);
     }
   
     setLoading(false);
@@ -192,7 +218,7 @@ function App() {
         )}
 
         {/* Results Section */}
-        {sentimentResults.length > 0 && (
+        {Array.isArray(sentimentResults) && sentimentResults.length > 0 && (
           <section className="results-section">
             <div className="section-title">
               <h3>Individual Comment Analysis</h3>
@@ -205,7 +231,13 @@ function App() {
             
             <div className="comments-container">
               {sentimentResults.map((item, index) => {
+                // Additional safety checks for each item
+                if (!item || typeof item !== 'object') {
+                  return null;
+                }
+
                 const sentimentValue = typeof item.sentiment === 'number' ? item.sentiment : 0;
+                const itemText = typeof item.text === 'string' ? item.text : 'No text available';
                 const sentimentLabel =
                   sentimentValue > 0.1
                     ? 'positive'
@@ -226,9 +258,9 @@ function App() {
                     </div>
                     
                     <div className="comment-content">
-                      {item.text.length > 150
-                        ? `${item.text.slice(0, 150)}...`
-                        : item.text}
+                      {itemText.length > 150
+                        ? `${itemText.slice(0, 150)}...`
+                        : itemText}
                     </div>
                     
                     <div className="comment-footer">
@@ -242,6 +274,19 @@ function App() {
                   </div>
                 );
               })}
+            </div>
+          </section>
+        )}
+
+        {/* No Results Message */}
+        {!loading && Array.isArray(sentimentResults) && sentimentResults.length === 0 && !error && (
+          <section className="no-results-section">
+            <div className="glass-card">
+              <div className="no-results-content">
+                <div className="no-results-icon">🔍</div>
+                <h3>No Results Yet</h3>
+                <p>Enter a URL above to start analyzing sentiment</p>
+              </div>
             </div>
           </section>
         )}
