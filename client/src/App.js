@@ -191,64 +191,61 @@ function App() {
           </section>
         )}
 
-       {sentimentResults && sentimentResults.length > 0 && (
-  <div>
-    <h3>Individual Comment Analysis</h3>
-    
-    <div className="sentiment-legend">
-      <span className="positive">Positive</span>
-      <span className="neutral">Neutral</span>
-      <span className="negative">Negative</span>
-    </div>
-    
-    <div className="results-container">
-      {sentimentResults.map((item, index) => {
-        // Add safety checks for item properties
-        const sentimentValue = (typeof item?.sentiment === 'number') ? item.sentiment : 0;
-        const sentimentLabel = sentimentValue > 0.1 ? 'positive' : sentimentValue < -0.1 ? 'negative' : 'neutral';
-        const commentText = item?.text || 'No text available';
-        
-        return (
-          <div key={index} className={`result-item ${sentimentLabel}`}>
-            <div className="sentiment-info">
-              <div className="sentiment-emoji-label">
-                <span className="emoji">{getSentimentEmoji(sentimentValue).split(' ')[0]}</span>
-                <span className="label">{getSentimentEmoji(sentimentValue).split(' ').slice(1).join(' ')}</span>
-              </div>
-              <div className="sentiment-score">
-                {sentimentValue.toFixed(2)}
+        {/* Results Section */}
+        {sentimentResults.length > 0 && (
+          <section className="results-section">
+            <div className="section-title">
+              <h3>Individual Comment Analysis</h3>
+              <div className="sentiment-badges">
+                <span className="badge positive">Positive</span>
+                <span className="badge neutral">Neutral</span>
+                <span className="badge negative">Negative</span>
               </div>
             </div>
             
-            <div className="comment-text">
-              {commentText.length > 150 
-                ? `${commentText.slice(0, 150)}...` 
-                : commentText
-              }
-            </div>
-            
-            <div className="result-actions">
-              {/* Add any action buttons here if needed */}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  </div>
-)}
+            <div className="comments-container">
+              {sentimentResults.map((item, index) => {
+                const sentimentValue = typeof item.sentiment === 'number' ? item.sentiment : 0;
+                const sentimentLabel =
+                  sentimentValue > 0.1
+                    ? 'positive'
+                    : sentimentValue < -0.1
+                    ? 'negative'
+                    : 'neutral';
 
-{/* Optional: Show loading or empty state */}
-{!sentimentResults && (
-  <div className="loading-state">
-    Loading sentiment analysis...
-  </div>
-)}
-
-{sentimentResults && sentimentResults.length === 0 && (
-  <div className="empty-state">
-    No sentiment data available.
-  </div>
-)}
+                return (
+                  <div key={index} className={`comment-glass ${sentimentLabel}`}>
+                    <div className="comment-header">
+                      <div className="sentiment-indicator">
+                        <span className="sentiment-emoji">{getSentimentEmoji(sentimentValue).split(' ')[0]}</span>
+                        <span className="sentiment-text">{getSentimentEmoji(sentimentValue).split(' ').slice(1).join(' ')}</span>
+                      </div>
+                      <div className="sentiment-score">
+                        {sentimentValue.toFixed(2)}
+                      </div>
+                    </div>
+                    
+                    <div className="comment-content">
+                      {item.text.length > 150
+                        ? `${item.text.slice(0, 150)}...`
+                        : item.text}
+                    </div>
+                    
+                    <div className="comment-footer">
+                      <div className={`sentiment-bar ${sentimentLabel}`}>
+                        <div 
+                          className="sentiment-fill" 
+                          style={{ width: `${Math.abs(sentimentValue) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+      </main>
 
       {/* Footer */}
       <footer className="footer">
